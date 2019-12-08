@@ -25,7 +25,7 @@ public class WorkersManager {
 
     void start() {
         for (int i = 1; i <= 10; i++) {
-            log.info("Creating worker runnable number {}", i);
+            log.info("Creating worker number {}", i);
             WorkerOptions.Builder woBuilder = new WorkerOptions.Builder();
             woBuilder.setIdentity("worker-" + i);
             Worker worker = factory.newWorker(TASK_LIST, woBuilder.build());
