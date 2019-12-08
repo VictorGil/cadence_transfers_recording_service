@@ -17,7 +17,6 @@ import net.devaction.cadence.worker.WorkersCreator;
 public class TransfersRecordingServiceImpl implements TransfersRecordingService {
     private static final Logger log = LoggerFactory.getLogger(TransfersRecordingServiceImpl.class);
 
-    // TODO
     private final KafkaConsumerWrapper<Transfer> transferConsumer;
 
     private final WorkersCreator<AccountBalanceWorkflowImpl> workersCreator;
@@ -31,10 +30,12 @@ public class TransfersRecordingServiceImpl implements TransfersRecordingService 
     @Override
     public void start() {
         workersCreator.start();
+        transferConsumer.start();
     }
 
     @Override
     public void stop() {
+        transferConsumer.stop();
         workersCreator.stop();
     }
 }

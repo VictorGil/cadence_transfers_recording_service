@@ -5,11 +5,15 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.devaction.cadence.transfersrecordingservice.config.ConfigReader;
+import net.devaction.cadence.transfersrecordingservice.config.ConfigValues;
+import net.devaction.cadence.transfersrecordingservice.processor.TransferProcessor;
 import net.devaction.cadence.transfersrecordingservice.workflow.AccountBalanceWorkflowImpl;
 import net.devaction.cadence.worker.WorkersCreator;
 import net.devaction.kafka.avro.Transfer;
+import net.devaction.kafka.consumer.ConsumerOptions;
 import net.devaction.kafka.consumer.KafkaConsumerWrapper;
-
+import net.devaction.kafka.consumer.KafkaConsumerWrapperImpl;
 // We are aware that this class is not part of the Java API
 // but we need it
 import sun.misc.Signal;
@@ -26,6 +30,7 @@ public class CadenceTransfersRecodingServiceMain implements SignalHandler {
     private static final String WINCH_SIGNAL = "WINCH";
 
     private TransfersRecordingService service;
+    private TransferProcessor transferProcessor;
 
     public static void main(String[] args) {
         new CadenceTransfersRecodingServiceMain().run();
@@ -35,22 +40,45 @@ public class CadenceTransfersRecodingServiceMain implements SignalHandler {
         log.info("Starting");
         registerThisAsOsSignalHandler();
 
-        final String domain = "domain01";
+        ConfigValues values = readConfigValues();
+        final String domain = values.getCadenceDomain();
         final String taskList = "taskList01";
         final Class<AccountBalanceWorkflowImpl> workflowClass = AccountBalanceWorkflowImpl.class;
-        final int numOfWorkers = 5;
+        final int numOfWorkers = values.getCadenceWorkers();
 
         final WorkersCreator<AccountBalanceWorkflowImpl> workersCreator = new WorkersCreator<>(
                 domain, taskList, workflowClass, numOfWorkers);
 
-        // TODO
-        final KafkaConsumerWrapper<Transfer> kafkaConsumerWrapper = null;
+        transferProcessor = new TransferProcessor(domain);
+        transferProcessor.start();
+
+        ConsumerOptions<Transfer>.Builder optionsBuilder = new ConsumerOptions<Transfer>().newBuilder();
+        ConsumerOptions<Transfer> options = optionsBuilder.setBootstrapServers(values.getKafkaBootstrapServers())
+                .setSchemaRegistryUrl(values.getKafkaSchemaRegistryUrl())
+                .setTopic(values.getKafkaTransfersTopic())
+                .setPollingMillis(values.getKafkaPollingMillis())
+                .setProcessor(transferProcessor)
+                .setSeekFromBeginning(true).build();
+
+        final KafkaConsumerWrapper<Transfer> kafkaConsumerWrapper = new KafkaConsumerWrapperImpl<>(options);
 
         service = new TransfersRecordingServiceImpl(kafkaConsumerWrapper,
                 workersCreator);
 
         service.start();
         log.info("End of the \"main\" thread");
+    }
+
+    private ConfigValues readConfigValues() {
+        final ConfigReader reader = new ConfigReader();
+        ConfigValues values = null;
+        try {
+            values = reader.read();
+        } catch (Exception ex) {
+            log.error("Unable to read configuration values, exiting");
+            System.exit(1);
+        }
+        return values;
     }
 
     private void registerThisAsOsSignalHandler() {
@@ -69,6 +97,7 @@ public class CadenceTransfersRecodingServiceMain implements SignalHandler {
     public void handle(Signal osSignal) {
         log.info("We have received the Operating System signal to tell us to stop: {}", osSignal.getName());
         service.stop();
+        transferProcessor.stop();
 
         // In theory, this should not be needed
         // but in reality, it is needed.

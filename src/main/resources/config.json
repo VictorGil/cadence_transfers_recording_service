@@ -1,0 +1,9 @@
+{
+    "kafka_bootstrap_servers": "localhost:9092",
+    "kafka_schema_registry_URL": "http://localhost:8081",
+    "kafka_transfers_topic": "transfers",
+    "kafka_polling_millis": 100,
+    
+    "cadence_domain": "domain01",
+    "cadence_workers": 5
+}
