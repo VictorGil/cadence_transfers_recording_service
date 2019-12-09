@@ -1,4 +1,4 @@
-# Transfers Recording Service
+# Cadence Transfers Recording Service
   
 This is an example/PoC of how to use **Uber Cadence** in order to implement event-driven microservices,
 together with Apache Kafka.  
