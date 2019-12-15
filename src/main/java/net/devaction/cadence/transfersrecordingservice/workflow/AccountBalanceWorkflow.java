@@ -12,6 +12,7 @@ import com.uber.cadence.workflow.WorkflowMethod;
  * since December 2019
  */
 public interface AccountBalanceWorkflow {
+
     @WorkflowMethod
     void openAccount(String accountId);
 

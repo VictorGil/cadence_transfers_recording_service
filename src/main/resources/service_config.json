@@ -4,6 +4,5 @@
     "kafka_transfers_topic": "transfers",
     "kafka_polling_millis": 100,
     
-    "cadence_domain": "domain01",
-    "cadence_workers": 5
+    "cadence_domain": "domain01"
 }

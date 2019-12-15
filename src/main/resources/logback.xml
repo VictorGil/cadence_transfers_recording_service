@@ -11,6 +11,8 @@
 
     <logger name="net.devaction" level="TRACE"/>
 
+    <logger name="net.devaction.kafka.consumer.KafkaConsumerWrapperImpl" level="DEBUG"/>
+
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

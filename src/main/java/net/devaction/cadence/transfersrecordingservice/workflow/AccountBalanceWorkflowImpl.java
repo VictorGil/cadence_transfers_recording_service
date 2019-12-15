@@ -12,6 +12,7 @@ import com.uber.cadence.workflow.Workflow;
  * since December 2019
  */
 public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
+
     private static final Logger log = Workflow.getLogger(AccountBalanceWorkflowImpl.class);
 
     private BigDecimal balance;
@@ -24,12 +25,13 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
 
     @Override
     public void openAccount(String accountId) {
+        log.info("Going to open a new account, account id (workflow id): \"{}\"", accountId);
         this.balance = BigDecimal.ZERO;
         this.accountId = accountId;
         this.transfers = new Transfers(accountId);
 
         Workflow.await(() -> accountClosed);
-        log.info("Existing workflow, account id: {}, balance: {}", accountId, balance);
+        log.info("Exiting workflow, account id: \"{}\", balance: {}", accountId, balance);
     }
 
     @Override
@@ -38,7 +40,7 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
         transfers.add(transfer);
         balance = updateBalance(transfer);
 
-        log.debug("New \"transfer\" added related to account with id {}: {}\n"
+        log.debug("New \"transfer\" added related to account with id \"{}\":\n{}\n"
                 + "current account balance: {}", accountId, transfer, balance);
     }
 
@@ -62,7 +64,7 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
 
     @Override
     public void closeAccount() {
-        log.info("Going to close the account {}", accountId);
+        log.info("Going to close the account with id \"{}\"", accountId);
         accountClosed = true;
     }
 }

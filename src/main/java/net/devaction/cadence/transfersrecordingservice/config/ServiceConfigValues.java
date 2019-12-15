@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * since December 2019
  */
-public class ConfigValues {
+public class ServiceConfigValues {
 
     @JsonProperty("kafka_bootstrap_servers")
     private String kafkaBootstrapServers;
@@ -24,18 +24,13 @@ public class ConfigValues {
     @JsonProperty("cadence_domain")
     private String cadenceDomain;
 
-    @JsonProperty("cadence_workers")
-    private int cadenceWorkers;
-
     @Override
     public String toString() {
         return "ConfigValues [kafkaBootstrapServers=" + kafkaBootstrapServers
                 + ", kafkaSchemaRegistryUrl=" + kafkaSchemaRegistryUrl
                 + ", kafkaTransfersTopic=" + kafkaTransfersTopic
                 + ", kafkaPollingMillis=" + kafkaPollingMillis
-
                 + ", cadenceDomain=" + cadenceDomain
-                + ", cadenceWorkers=" + cadenceWorkers
                 + "]";
     }
 
@@ -63,14 +58,6 @@ public class ConfigValues {
         this.cadenceDomain = cadenceDomain;
     }
 
-    public int getCadenceWorkers() {
-        return cadenceWorkers;
-    }
-
-    public void setCadenceWorkers(int cadenceWorkers) {
-        this.cadenceWorkers = cadenceWorkers;
-    }
-
     public String getKafkaTransfersTopic() {
         return kafkaTransfersTopic;
     }
@@ -79,11 +66,11 @@ public class ConfigValues {
         this.kafkaTransfersTopic = kafkaTransfersTopic;
     }
 
-    public int getKafkaPollingMillis(){
+    public int getKafkaPollingMillis() {
         return kafkaPollingMillis;
     }
 
-    public void setKafkaPollingMillis(int kafkaPollingMillis){
+    public void setKafkaPollingMillis(int kafkaPollingMillis) {
         this.kafkaPollingMillis = kafkaPollingMillis;
     }
 }

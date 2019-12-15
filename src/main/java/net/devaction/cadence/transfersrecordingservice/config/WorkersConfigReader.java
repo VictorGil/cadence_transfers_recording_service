@@ -19,13 +19,13 @@ import java.net.URISyntaxException;
  *
  * since December 2019
  */
-public class ConfigReader {
-    private static final Logger log = LoggerFactory.getLogger(ConfigReader.class);
+public class WorkersConfigReader {
+    private static final Logger log = LoggerFactory.getLogger(WorkersConfigReader.class);
 
     // This file must be present in the classpath
-    private static final String CONFIG_FILE = "/config.json";
+    private static final String CONFIG_FILE = "/workers_config.json";
 
-    public ConfigValues read() throws Exception {
+    public WorkersConfigValues read() throws Exception {
         byte[] jsonBytes = null;
         log.debug("Going to read the configuration values from " + CONFIG_FILE);
 
@@ -38,9 +38,9 @@ public class ConfigReader {
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
-        ConfigValues config = null;
+        WorkersConfigValues config = null;
         try {
-            config = objectMapper.readValue(jsonBytes, ConfigValues.class);
+            config = objectMapper.readValue(jsonBytes, WorkersConfigValues.class);
         } catch (IOException ex) {
             String errorMessage = "Error when trying to parse " + CONFIG_FILE + " file";
             log.error(errorMessage, ex);

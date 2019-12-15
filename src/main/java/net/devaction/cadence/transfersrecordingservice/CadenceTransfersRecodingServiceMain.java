@@ -5,15 +5,14 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.devaction.cadence.transfersrecordingservice.config.ConfigReader;
-import net.devaction.cadence.transfersrecordingservice.config.ConfigValues;
+import net.devaction.cadence.transfersrecordingservice.config.ServiceConfigReader;
+import net.devaction.cadence.transfersrecordingservice.config.ServiceConfigValues;
 import net.devaction.cadence.transfersrecordingservice.processor.TransferProcessor;
-import net.devaction.cadence.transfersrecordingservice.workflow.AccountBalanceWorkflowImpl;
-import net.devaction.cadence.worker.WorkersCreator;
 import net.devaction.kafka.avro.Transfer;
 import net.devaction.kafka.consumer.ConsumerOptions;
 import net.devaction.kafka.consumer.KafkaConsumerWrapper;
 import net.devaction.kafka.consumer.KafkaConsumerWrapperImpl;
+
 // We are aware that this class is not part of the Java API
 // but we need it
 import sun.misc.Signal;
@@ -40,14 +39,8 @@ public class CadenceTransfersRecodingServiceMain implements SignalHandler {
         log.info("Starting");
         registerThisAsOsSignalHandler();
 
-        ConfigValues values = readConfigValues();
+        ServiceConfigValues values = readConfigValues();
         final String domain = values.getCadenceDomain();
-        final String taskList = "taskList01";
-        final Class<AccountBalanceWorkflowImpl> workflowClass = AccountBalanceWorkflowImpl.class;
-        final int numOfWorkers = values.getCadenceWorkers();
-
-        final WorkersCreator<AccountBalanceWorkflowImpl> workersCreator = new WorkersCreator<>(
-                domain, taskList, workflowClass, numOfWorkers);
 
         transferProcessor = new TransferProcessor(domain);
         transferProcessor.start();
@@ -62,22 +55,24 @@ public class CadenceTransfersRecodingServiceMain implements SignalHandler {
 
         final KafkaConsumerWrapper<Transfer> kafkaConsumerWrapper = new KafkaConsumerWrapperImpl<>(options);
 
-        service = new TransfersRecordingServiceImpl(kafkaConsumerWrapper,
-                workersCreator);
+        service = new TransfersRecordingServiceImpl(kafkaConsumerWrapper);
 
+        // The execution of the \"main\" thread will block on the statement below
         service.start();
         log.info("End of the \"main\" thread");
     }
 
-    private ConfigValues readConfigValues() {
-        final ConfigReader reader = new ConfigReader();
-        ConfigValues values = null;
+    private ServiceConfigValues readConfigValues() {
+        final ServiceConfigReader reader = new ServiceConfigReader();
+        ServiceConfigValues values = null;
+
         try {
             values = reader.read();
         } catch (Exception ex) {
             log.error("Unable to read configuration values, exiting");
             System.exit(1);
         }
+
         return values;
     }
 
@@ -105,6 +100,7 @@ public class CadenceTransfersRecodingServiceMain implements SignalHandler {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException ex) {
             log.error("{}", ex, ex);
+            Thread.currentThread().interrupt();
         }
         log.info("Exiting");
     }
