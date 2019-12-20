@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 
 import com.uber.cadence.workflow.Workflow;
 
+import net.devaction.cadence.transfersrecordingservice.activity.PublishAccountBalanceActivity;
+import net.devaction.entity.AccountBalanceEntity;
+
 /**
  * @author Víctor Gil
  *
@@ -23,6 +26,9 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
 
     private boolean accountClosed;
 
+    private final PublishAccountBalanceActivity publishBalanceActivity =
+            Workflow.newActivityStub(PublishAccountBalanceActivity.class);
+
     @Override
     public void openAccount(String accountId) {
         log.info("Going to open a new account, account id (workflow id): \"{}\"", accountId);
@@ -35,13 +41,17 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
     }
 
     @Override
-    public void addTransfer(final String id, final BigDecimal amount, final long transferTS) {
-        Transfer transfer = new Transfer(id, amount, transferTS);
+    public void addTransfer(final String transferId, final BigDecimal amount, final long transferTS) {
+        Transfer transfer = new Transfer(transferId, amount, transferTS);
         transfers.add(transfer);
         balance = updateBalance(transfer);
 
         log.debug("New \"transfer\" added related to account with id \"{}\":\n{}\n"
                 + "current account balance: {}", accountId, transfer, balance);
+
+        final String clientId = "N/A";
+        final long version = transfers.numberOfTransfers();
+        publishBalanceActivity.publish(new AccountBalanceEntity(accountId, clientId, transferId, balance, version));
     }
 
     BigDecimal updateBalance(Transfer transfer) {

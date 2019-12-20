@@ -36,12 +36,18 @@ public class WorkersCreatorMain implements SignalHandler {
         registerThisAsOsSignalHandler();
 
         WorkersConfigValues values = readConfigValues();
+
         final String domain = values.getCadenceDomain();
         final int numOfWorkers = values.getCadenceWorkers();
         final String taskList = "taskList01";
         final Class<AccountBalanceWorkflowImpl> workflowClass = AccountBalanceWorkflowImpl.class;
 
-        workersCreator = new WorkersCreator<>(domain, taskList, workflowClass, numOfWorkers);
+        final String bootstrapServers = values.getKafkaBootstrapServers();
+        final String schemaRegistryUrl = values.getKafkaSchemaRegistryUrl();
+        final String accountBalanceTopic = values.getKafkaAccountBalancesTopic();
+
+        workersCreator = new WorkersCreator<>(domain, taskList, workflowClass, numOfWorkers,
+                bootstrapServers, schemaRegistryUrl, accountBalanceTopic);
         workersCreator.start();
     }
 

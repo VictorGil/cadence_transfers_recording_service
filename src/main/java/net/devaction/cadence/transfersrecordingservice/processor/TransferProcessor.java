@@ -6,8 +6,10 @@ import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.uber.cadence.client.DuplicateWorkflowException;
 import com.uber.cadence.client.WorkflowClient;
 import com.uber.cadence.client.WorkflowOptions;
+import com.uber.cadence.client.WorkflowServiceException;
 
 import net.devaction.cadence.transfersrecordingservice.workflow.AccountBalanceWorkflow;
 import net.devaction.entity.TransferEntity;
@@ -64,7 +66,11 @@ public class TransferProcessor implements Processor<Transfer> {
                 accountId);
 
         // We send a signal to the existing workflow
-        workflow.addTransfer(transferId, amount, timestamp);
+        try {
+            workflow.addTransfer(transferId, amount, timestamp);
+        } catch (WorkflowServiceException ex) {
+            log.error("{}", ex.toString(), ex);
+        }
     }
 
     void openAccount(String accountId) {
@@ -78,7 +84,11 @@ public class TransferProcessor implements Processor<Transfer> {
         AccountBalanceWorkflow workflow = workflowClient.newWorkflowStub(AccountBalanceWorkflow.class,
                 workflowOptions);
 
-        // We start a new workflow
-        WorkflowClient.start(workflow::openAccount, accountId);
+        try {
+            // We start a new workflow
+            WorkflowClient.start(workflow::openAccount, accountId);
+        } catch (DuplicateWorkflowException ex) {
+            log.error("{}", ex.toString(), ex);
+        }
     }
 }
