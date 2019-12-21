@@ -11,7 +11,7 @@ import com.uber.cadence.client.WorkflowClient;
 import com.uber.cadence.client.WorkflowOptions;
 import com.uber.cadence.client.WorkflowServiceException;
 
-import net.devaction.cadence.transfersrecordingservice.workflow.AccountBalanceWorkflow;
+import net.devaction.cadence.accountbalanceworkflow.AccountBalanceWorkflow;
 import net.devaction.entity.TransferEntity;
 import net.devaction.kafka.avro.Transfer;
 import net.devaction.kafka.avro.util.TransferConverter;

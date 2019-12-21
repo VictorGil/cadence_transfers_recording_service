@@ -1,4 +1,4 @@
-package net.devaction.cadence.transfersrecordingservice.workflow;
+package net.devaction.cadence.accountbalanceworkflow;
 
 import java.math.BigDecimal;
 
@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 
 import com.uber.cadence.workflow.Workflow;
 
+import net.devaction.cadence.accountbalanceworkflow.AccountBalanceWorkflow;
+import net.devaction.cadence.accountbalanceworkflow.Transfer;
+import net.devaction.cadence.accountbalanceworkflow.Transfers;
 import net.devaction.cadence.transfersrecordingservice.activity.PublishAccountBalanceActivity;
 import net.devaction.entity.AccountBalanceEntity;
 

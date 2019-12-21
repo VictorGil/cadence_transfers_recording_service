@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import net.devaction.cadence.transfersrecordingservice.config.WorkersConfigReader;
 import net.devaction.cadence.transfersrecordingservice.config.WorkersConfigValues;
-import net.devaction.cadence.transfersrecordingservice.workflow.AccountBalanceWorkflowImpl;
+import net.devaction.cadence.accountbalanceworkflow.AccountBalanceWorkflowImpl;
 import net.devaction.cadence.worker.WorkersCreator;
 
 // We are aware that this class is not part of the Java API

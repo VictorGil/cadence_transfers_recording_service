@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.uber.cadence.client.WorkflowClient;
 
-import net.devaction.cadence.transfersrecordingservice.workflow.AccountBalanceWorkflow;
+import net.devaction.cadence.accountbalanceworkflow.AccountBalanceWorkflow;
 
 /**
  * @author Víctor Gil
