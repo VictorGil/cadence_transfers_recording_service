@@ -44,7 +44,7 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
 
     @Override
     public void addTransfer(final String transferId, final BigDecimal amount, final long transferTS) {
-        TransferEntity transfer = new TransferEntity(transferId, amount, transferTS);
+        TransferEntity transfer = new TransferEntity(transferId, accountId, amount, transferTS);
         transfers.add(transfer);
         balance = updateBalance(transfer);
 
