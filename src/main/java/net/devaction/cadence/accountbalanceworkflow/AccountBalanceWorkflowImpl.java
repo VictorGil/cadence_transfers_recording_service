@@ -1,16 +1,15 @@
 package net.devaction.cadence.accountbalanceworkflow;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.slf4j.Logger;
 
 import com.uber.cadence.workflow.Workflow;
 
-import net.devaction.cadence.accountbalanceworkflow.AccountBalanceWorkflow;
-import net.devaction.cadence.accountbalanceworkflow.Transfer;
-import net.devaction.cadence.accountbalanceworkflow.Transfers;
 import net.devaction.cadence.transfersrecordingservice.activity.PublishAccountBalanceActivity;
 import net.devaction.entity.AccountBalanceEntity;
+import net.devaction.entity.TransferEntity;
 
 /**
  * @author Víctor Gil
@@ -45,7 +44,7 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
 
     @Override
     public void addTransfer(final String transferId, final BigDecimal amount, final long transferTS) {
-        Transfer transfer = new Transfer(transferId, amount, transferTS);
+        TransferEntity transfer = new TransferEntity(transferId, amount, transferTS);
         transfers.add(transfer);
         balance = updateBalance(transfer);
 
@@ -57,7 +56,7 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
         publishBalanceActivity.publish(new AccountBalanceEntity(accountId, clientId, transferId, balance, version));
     }
 
-    BigDecimal updateBalance(Transfer transfer) {
+    BigDecimal updateBalance(TransferEntity transfer) {
         return updateBalance(balance, transfer.getAmount());
     }
 
@@ -66,18 +65,45 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
     }
 
     @Override
-    public BigDecimal getBalance() {
-        return balance;
+    public AccountBalanceEntity getBalance() {
+        // String accountId, String clientId, String transferId,
+        //BigDecimal balance, long version
+
+        AccountBalanceEntity balanceEntity = new AccountBalanceEntity();
+        balanceEntity.setAccountId(accountId);
+        balanceEntity.setTransferId(transfers.getLatestTransferId());
+        balanceEntity.setBalance(balance);
+        balanceEntity.setVersion(transfers.numberOfTransfers());
+        // We may deprecate the client id field
+        balanceEntity.setClientId("N/A");
+
+        return balanceEntity;
     }
 
     @Override
+    public BigDecimal getBalanceValue() {
+        return balance;
+    }
+
+    /*
+    @Override
     public Transfers getTransfers() {
         return transfers;
+    }
+    */
+
+    @Override
+    public List<TransferEntity> getTransfersList() {
+        return transfers.getList();
     }
 
     @Override
     public void closeAccount() {
         log.info("Going to close the account with id \"{}\"", accountId);
         accountClosed = true;
+    }
+
+    public long getAccountBalanceVersion() {
+        return transfers.getList().size() + 1;
     }
 }

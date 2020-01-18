@@ -23,8 +23,8 @@ import sun.misc.SignalHandler;
  *
  * since December 2019
  */
-public class CadenceTransfersRecodingServiceMain implements SignalHandler {
-    private static final Logger log = LoggerFactory.getLogger(CadenceTransfersRecodingServiceMain.class);
+public class CadenceTransfersRecordingServiceMain implements SignalHandler {
+    private static final Logger log = LoggerFactory.getLogger(CadenceTransfersRecordingServiceMain.class);
 
     private static final String WINCH_SIGNAL = "WINCH";
 
@@ -32,7 +32,7 @@ public class CadenceTransfersRecodingServiceMain implements SignalHandler {
     private TransferProcessor transferProcessor;
 
     public static void main(String[] args) {
-        new CadenceTransfersRecodingServiceMain().run();
+        new CadenceTransfersRecordingServiceMain().run();
     }
 
     private void run() {

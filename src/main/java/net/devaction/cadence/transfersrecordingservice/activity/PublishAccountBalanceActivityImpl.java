@@ -22,7 +22,7 @@ public class PublishAccountBalanceActivityImpl implements PublishAccountBalanceA
     }
 
     @Override
-    public void publish(AccountBalanceEntity accountBalance){
+    public void publish(AccountBalanceEntity accountBalance) {
         producer.send(accountBalance);
     }
 }
