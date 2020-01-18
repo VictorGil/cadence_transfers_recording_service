@@ -51,27 +51,27 @@ public class WorkersConfigValues {
         this.cadenceWorkers = cadenceWorkers;
     }
 
-    public String getKafkaBootstrapServers(){
+    public String getKafkaBootstrapServers() {
         return kafkaBootstrapServers;
     }
 
-    public void setKafkaBootstrapServers(String kafkaBootstrapServers){
+    public void setKafkaBootstrapServers(String kafkaBootstrapServers) {
         this.kafkaBootstrapServers = kafkaBootstrapServers;
     }
 
-    public String getKafkaSchemaRegistryUrl(){
+    public String getKafkaSchemaRegistryUrl() {
         return kafkaSchemaRegistryUrl;
     }
 
-    public void setKafkaSchemaRegistryUrl(String kafkaSchemaRegistryUrl){
+    public void setKafkaSchemaRegistryUrl(String kafkaSchemaRegistryUrl) {
         this.kafkaSchemaRegistryUrl = kafkaSchemaRegistryUrl;
     }
 
-    public String getKafkaAccountBalancesTopic(){
+    public String getKafkaAccountBalancesTopic() {
         return kafkaAccountBalancesTopic;
     }
 
-    public void setKafkaAccountBalancesTopic(String kafkaAccountBalancesTopic){
+    public void setKafkaAccountBalancesTopic(String kafkaAccountBalancesTopic) {
         this.kafkaAccountBalancesTopic = kafkaAccountBalancesTopic;
     }
 }
