@@ -85,13 +85,6 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
         return balance;
     }
 
-    /*
-    @Override
-    public Transfers getTransfers() {
-        return transfers;
-    }
-    */
-
     @Override
     public List<TransferEntity> getTransfersList() {
         return transfers.getList();
