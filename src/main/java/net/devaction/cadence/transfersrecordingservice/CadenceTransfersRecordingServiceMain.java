@@ -51,7 +51,10 @@ public class CadenceTransfersRecordingServiceMain implements SignalHandler {
                 .setTopic(values.getKafkaTransfersTopic())
                 .setPollingMillis(values.getKafkaPollingMillis())
                 .setProcessor(transferProcessor)
-                .setSeekFromBeginning(true).build();
+                // We should not seek from the beginning of the Kafka topic (offset number 0)
+                // because the state is saved in the Cadence server, and hence, we may get a
+                // "duplicate workflow" exception
+                .setSeekFromBeginning(false).build();
 
         final KafkaConsumerWrapper<Transfer> kafkaConsumerWrapper = new KafkaConsumerWrapperImpl<>(options);
 
