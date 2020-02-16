@@ -10,6 +10,7 @@ together with Apache Kafka.
  - Confluent Platform (which includes Kafka)
   
 ## Other related repositories
+ - [account_balance_workflow_api](https://github.com/VictorGil/account_balance_workflow_api)
  - [transfers_api](https://github.com/VictorGil/transfers_api/)
  - [transfers_recording_service](https://github.com/VictorGil/transfers_recording_service/)
  - [transfers_websockets_service](https://github.com/VictorGil/transfers_websockets_service)

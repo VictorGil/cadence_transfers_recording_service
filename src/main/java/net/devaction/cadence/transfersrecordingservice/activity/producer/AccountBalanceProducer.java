@@ -15,5 +15,3 @@ public interface AccountBalanceProducer {
 
     public void stop();
 }
-
-
