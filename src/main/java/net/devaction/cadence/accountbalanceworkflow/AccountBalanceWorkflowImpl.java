@@ -72,8 +72,8 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
         String latestTransferId = null;
         try {
             latestTransferId = transfers.getLatestTransferId();
-        } catch (NoTransfersYetException e) {
-            log.debug("There are no transfers yet for account id {}", accountId);
+        } catch (NoTransfersYetException ex) {
+            log.debug("There are no transfers yet for account id \"{}\"", accountId);
             latestTransferId = "There are no transfers yet";
         }
         balanceEntity.setTransferId(latestTransferId);
