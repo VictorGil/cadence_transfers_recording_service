@@ -66,12 +66,18 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
 
     @Override
     public AccountBalanceEntity getBalance() {
-        // String accountId, String clientId, String transferId,
-        //BigDecimal balance, long version
-
         AccountBalanceEntity balanceEntity = new AccountBalanceEntity();
         balanceEntity.setAccountId(accountId);
-        balanceEntity.setTransferId(transfers.getLatestTransferId());
+
+        String latestTransferId = null;
+        try {
+            latestTransferId = transfers.getLatestTransferId();
+        } catch (NoTransfersYetException e) {
+            log.debug("There are no transfers yet for account id {}", accountId);
+            latestTransferId = "There are no transfers yet";
+        }
+        balanceEntity.setTransferId(latestTransferId);
+
         balanceEntity.setBalance(balance);
         balanceEntity.setVersion(transfers.numberOfTransfers());
         // We may deprecate the client id field
@@ -97,6 +103,6 @@ public class AccountBalanceWorkflowImpl implements AccountBalanceWorkflow {
     }
 
     public long getAccountBalanceVersion() {
-        return transfers.getList().size() + 1;
+        return (long) transfers.getList().size() + 1;
     }
 }

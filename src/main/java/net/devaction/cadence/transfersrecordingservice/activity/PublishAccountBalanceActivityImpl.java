@@ -1,9 +1,5 @@
 package net.devaction.cadence.transfersrecordingservice.activity;
 
-import org.slf4j.Logger;
-
-import com.uber.cadence.workflow.Workflow;
-
 import net.devaction.cadence.transfersrecordingservice.activity.producer.AccountBalanceProducer;
 import net.devaction.entity.AccountBalanceEntity;
 
@@ -13,7 +9,6 @@ import net.devaction.entity.AccountBalanceEntity;
  * since December 2019
  */
 public class PublishAccountBalanceActivityImpl implements PublishAccountBalanceActivity {
-    private static final Logger log = Workflow.getLogger(PublishAccountBalanceActivityImpl.class);
 
     private final AccountBalanceProducer producer;
 
