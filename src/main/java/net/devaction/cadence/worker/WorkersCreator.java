@@ -61,7 +61,7 @@ public class WorkersCreator<T> {
     }
 
     public void stop() {
-        log.info("We have been told to stop, shutting down all the workiers");
+        log.info("We have been told to stop, shutting down all the workers");
         factory.shutdown();
         log.info("Waiting for all the workers to come down");
         factory.awaitTermination(1L, TimeUnit.HOURS);
